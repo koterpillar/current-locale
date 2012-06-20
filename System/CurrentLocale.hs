@@ -5,7 +5,9 @@ import System.Process
 
 format :: String -> String -> IO String
 format fmt date = do
-    readProcess "date" ["+" ++ fmt, "-d", date] ""
+    output <- readProcess "date" ["+" ++ fmt, "-d", date] ""
+    return (stripNL output)
+    where stripNL x = (lines x) !! 0
 
 formatWDay :: (String, String) -> IO (String, String)
 formatWDay (wday, _) = do
