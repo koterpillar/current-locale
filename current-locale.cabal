@@ -1,6 +1,9 @@
 name: current-locale
 version: 0.1.0.1
-synopsis: A quick way to get the current system locale in System.Locale format
+synopsis: Get the current system locale in System.Locale format
+description:
+  Use the system 'date' command to find out the current
+  system locale in System.Locale format.
 homepage: https://github.com/koterpillar/current-locale
 license: MIT
 license-file: LICENSE
