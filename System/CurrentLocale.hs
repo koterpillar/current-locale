@@ -1,3 +1,4 @@
+-- |Get the current system locale in 'System.Locale' format.
 module System.CurrentLocale (currentLocale) where
 
 import System.Locale
@@ -22,6 +23,7 @@ formatMonth (month, _) = do
     short <- format "%b" mdate
     return (full, short)
 
+-- |Get the current system locale.
 currentLocale :: IO TimeLocale
 currentLocale = do
     wDays <- mapM formatWDay $ wDays defaultTimeLocale
