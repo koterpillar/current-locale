@@ -1,4 +1,4 @@
-module System.CurrentLocale where
+module System.CurrentLocale (currentLocale) where
 
 import System.Locale
 import System.Process
