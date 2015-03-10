@@ -1,34 +1,39 @@
 -- |Get the current system locale in 'System.Locale' format.
 module System.CurrentLocale (currentLocale) where
 
+import Control.Applicative
+import Data.List.Split (splitOn)
 import System.Locale
 import System.Process
 
-format :: String -> String -> IO String
-format fmt date = do
-    output <- readProcess "date" ["+" ++ fmt, "-d", date] ""
-    return (stripNL output)
-    where stripNL x = (lines x) !! 0
+getLocaleData :: IO [String]
+getLocaleData =
+    lines <$> readProcess "locale"
+                          ["abday", "day",
+                           "abmon", "mon",
+                           "am_pm",
+                           "d_t_fmt",
+                           "d_fmt",
+                           "t_fmt",
+                           "t_fmt_ampm"]
+                          ""
 
-formatWDay :: (String, String) -> IO (String, String)
-formatWDay (wday, _) = do
-    full <- format "%A" wday
-    short <- format "%a" wday
-    return (full, short)
+split :: String -> [String]
+split = splitOn ";"
 
-formatMonth :: (String, String) -> IO (String, String)
-formatMonth (month, _) = do
-    let mdate = month ++ " 1"
-    full <- format "%B" mdate
-    short <- format "%b" mdate
-    return (full, short)
-
--- |Get the current system locale.
+-- |Get the current system locale. This function does not initialize the
+-- 'System.Locale.TimeLocale.intervals' field.
 currentLocale :: IO TimeLocale
 currentLocale = do
-    wDays <- mapM formatWDay $ wDays defaultTimeLocale
-    months <- mapM formatMonth $ months defaultTimeLocale
+    [abday, day, abmon, mon, am_pm, d_t_fmt, d_fmt, t_fmt, t_fmt_ampm] <- getLocaleData
+    let [am, pm] = split am_pm
+
     return defaultTimeLocale
-        { wDays = wDays
-        , months = months
+        { wDays = zip (split day) (split abday)
+        , months = zip (split mon) (split abmon)
+        , amPm = (am, pm)
+        , dateTimeFmt = d_t_fmt
+        , dateFmt = d_fmt
+        , timeFmt = t_fmt
+        , time12Fmt = t_fmt_ampm
         }
