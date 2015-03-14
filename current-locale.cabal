@@ -1,5 +1,5 @@
 name: current-locale
-version: 0.2.0.0
+version: 0.2.0.1
 synopsis: Get the current system locale in System.Locale format
 description:
   Use the system 'locale' command to find out the current
